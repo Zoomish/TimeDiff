@@ -13,7 +13,7 @@ export class HandleMessageService {
         console.log(msg.text)
 
         const [action, text] = [
-            msg.text?.split(' ')?.[0] || '/start',
+            msg.text?.split(' ')?.[0] || msg.text?.split('@')?.[0] || '/start',
             msg.text?.split(' ')?.slice(1)?.join(' ') || '',
         ]
         switch (action) {
