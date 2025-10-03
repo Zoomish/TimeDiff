@@ -31,13 +31,9 @@ export class HandleMessageService {
                 'Неправильный формат. Правильный формат /time Время Город -> Город'
             )
         }
-        const fromCityTimezone = this.getTimezoneByCity(
-            await this.convertToEnglish(fromCity)
-        )
+        const fromCityTimezone = await this.convertToEnglish(fromCity)
 
-        const toCityTimezone = this.getTimezoneByCity(
-            await this.convertToEnglish(toCity)
-        )
+        const toCityTimezone = await this.convertToEnglish(toCity)
         if (fromCityTimezone && toCityTimezone) {
             const text = this.convertTime(
                 time,
@@ -61,14 +57,15 @@ export class HandleMessageService {
         const model = genAI.getGenerativeModel({
             model: 'gemini-2.0-flash',
         })
-        await model.generateContent(
-            'Ты профессиональный переводчик. Ты получил название города или страны на любом языке, например русском. Переведи его на английский.\n' +
-                'Например, вводит Москва, ты должен ответить Moscow.\n' +
-                'Если пользователь ввел страну, верни столицу этой страны. Например, вводит Россия, ты должен ответить Moscow.\n' +
-                'Возвращай одно слово-сам город. Не пиши ничего больше.\n' +
-                'Вот первое слово: ' +
+        const text1 = await model.generateContent(
+            'Ты профессиональный переводчик. Ты получил название города или страны на любом языке, например русском. Переведи его на английский и верни тайм зону.\n' +
+                'Например, вводит Москва, ты должен ответить Europe/Moscow.\n' +
+                'Если пользователь ввел страну, верни столицу этой страны. Например, вводит Россия, ты должен ответить Europe/Moscow.\n' +
+                'Возвращай одно слово-саму зону. Не пиши ничего больше.\n' +
+                'Вот первый город: ' +
                 text
         )
+        return text1.response.text()
     }
 
     private getTimezoneByCity(cityName) {
