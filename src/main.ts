@@ -11,6 +11,8 @@ async function bootstrap() {
         }),
     })
     app.enableCors()
+    app.useLogger(app.get(ConsoleLogger))
+    app.setGlobalPrefix('api')
 
     await app.listen(3000, async () => {
         console.log(`Server started on port ${await app.getUrl()}`)
