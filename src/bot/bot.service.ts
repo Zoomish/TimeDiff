@@ -26,10 +26,11 @@ export class BotService implements OnModuleInit {
             {
                 command: '/time',
                 description: 'Разница во времени в формате /time Город - Город',
-            }
+            },
         ])
-        bot.on('message', async (callbackQuery) => {
-            await this.handleMessageService.handleMessage(callbackQuery)
+        bot.on('message', async (msg: TelegramBot.Message) => {
+            global.msg = msg
+            await this.handleMessageService.handleMessage(msg)
         })
     }
 }
