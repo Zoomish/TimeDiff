@@ -29,9 +29,21 @@ export class HandleMessageService {
         if (!textMain) {
             return await bot.sendMessage(
                 msg.chat.id,
-                'Введите данные в формате `/time Время Город - Город`',
+                'Введите данные в формате <code>/time Время Город - Город</code>',
                 {
                     parse_mode: 'HTML',
+                    reply_markup: {
+                        inline_keyboard: [
+                            [
+                                {
+                                    text: 'Скопировать формат',
+                                    copy_text: {
+                                        text: '/time Время Город - Город',
+                                    },
+                                },
+                            ],
+                        ],
+                    },
                 }
             )
         }
