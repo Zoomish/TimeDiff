@@ -10,6 +10,8 @@ export class HandleMessageService {
     async handleMessage(msg: TelegramBot.Message) {
         const bot: TelegramBot = global.bot
         bot.sendChatAction(msg.chat.id, 'typing')
+        console.log(msg.text)
+
         const [action, text] = [
             msg.text.split(' ')[0],
             msg.text.split(' ').slice(1).join(' '),
