@@ -31,18 +31,15 @@ export class HandleMessageService {
                 'Неправильный формат. Правильный формат /time Время Город - Город'
             )
         }
-        // const fromCityTimezone = this.getTimezoneByCity(
-        //     await this.convertToEnglish(fromCity)
-        // )
+        const fromCityTimezone = this.getTimezoneByCity(
+            await this.convertToEnglish(fromCity)
+        )
 
-        // const toCityTimezone = this.getTimezoneByCity(
-        //     await this.convertToEnglish(toCity)
-        // )
-
-        const fromCityTimezone = 'America/Chicago'
-        const toCityTimezone = 'America/New_York'
+        const toCityTimezone = this.getTimezoneByCity(
+            await this.convertToEnglish(toCity)
+        )
         if (fromCityTimezone && toCityTimezone) {
-            const text = await this.convertTime(
+            const text = this.convertTime(
                 time,
                 fromCityTimezone,
                 toCityTimezone
