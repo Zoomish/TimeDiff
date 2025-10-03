@@ -2,7 +2,6 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import TelegramBot from 'node-telegram-bot-api'
-const cityTimezones = require('city-timezones')
 
 @Injectable()
 export class HandleMessageService {
