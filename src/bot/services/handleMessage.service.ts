@@ -10,12 +10,15 @@ export class HandleMessageService {
     async handleMessage(msg: TelegramBot.Message) {
         const bot: TelegramBot = global.bot
         bot.sendChatAction(msg.chat.id, 'typing')
-        const texts = msg.text.split(' ').slice(1).join(' ')
-        switch (texts[0]) {
+        const [action, text] = [
+            msg.text.split(' ')[0],
+            msg.text.split(' ').slice(1).join(' '),
+        ]
+        switch (action) {
             case '/start':
                 return await bot.sendMessage(msg.chat.id, 'Hello World!')
             case '/time':
-                return await this.getTime(texts[1])
+                return await this.getTime(text)
         }
     }
     private async getTime(textMain: string) {
