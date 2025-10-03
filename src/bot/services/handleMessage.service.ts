@@ -9,6 +9,7 @@ export class HandleMessageService {
 
     async handleMessage(msg: TelegramBot.Message) {
         const bot: TelegramBot = global.bot
+        bot.sendChatAction(msg.chat.id, 'typing')
         const texts = msg.text.split(' ')
         switch (texts[0]) {
             case '/start':
