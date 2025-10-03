@@ -15,7 +15,9 @@ export class HandleMessageService {
             case '/start':
                 return await bot.sendMessage(msg.chat.id, 'Hello World!')
             case '/time':
-                return await this.getTime(texts[1].split(' ').slice(1).join(' '))
+                return await this.getTime(
+                    texts[1].split(' ').slice(1).join(' ')
+                )
         }
     }
     private async getTime(textMain: string) {
