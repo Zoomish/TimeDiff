@@ -48,9 +48,7 @@ export class HandleMessageService {
             )
         }
         const text = await this.converTime(textMain)
-        return await bot.sendMessage(msg.chat.id, text, {
-            parse_mode: 'MarkdownV2',
-        })
+        return await bot.sendMessage(msg.chat.id, text)
     }
 
     private async converTime(text: string) {
@@ -69,13 +67,14 @@ export class HandleMessageService {
                     'В ответе дай только одну строчку - только время в формате “Когда в Город1 время, в Город2 ...”!!!!\n' +
                     'Если пользователь ввел что-то другое, или дал недостаточно данных, то в качестве ответа ты должен вернуть “Введите данные в формате /time Время Город - Город”, НО ' +
                     `Если пользователь ввел только города или страны, дай ответ относительно текущего времени, вот оно в UTC:${new Date().toUTCString().split(' ')[4].split(':').slice(0, 2).join(':')}\n` +
-                    'Пиши ответ в Markdown2 виде, и избегай подобных ошибок: TelegramError: ETELEGRAM: 400 Bad Request: cant parse entities: Character "." is reserved and must be escaped with the preceding "\"\n' +
+                    'Не используй никакие разметки в ответе, только текст\n' +
                     'Вот первая строка: ' +
                     text
             )
             .then((text2) => {
                 text1 = text2.response.text()
             })
+        console.log(text1)
         return text1
     }
 }
