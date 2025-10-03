@@ -26,8 +26,19 @@ export class HandleMessageService {
     private async getTime(textMain: string) {
         const bot: TelegramBot = global.bot
         const msg: TelegramBot.Message = global.msg
+        if (!textMain) {
+            return await bot.sendMessage(
+                msg.chat.id,
+                'Введите данные в формате `/time Время Город - Город`',
+                {
+                    parse_mode: 'HTML',
+                }
+            )
+        }
         const text = await this.converTime(textMain)
-        return await bot.sendMessage(msg.chat.id, text)
+        return await bot.sendMessage(msg.chat.id, text, {
+            parse_mode: 'MarkdownV2',
+        })
     }
 
     private async converTime(text: string) {
