@@ -24,11 +24,11 @@ export class HandleMessageService {
     private async getTime(time: string, cities: string) {
         const bot: TelegramBot = global.bot
         const msg: TelegramBot.Message = global.msg
-        const [fromCity, toCity] = cities.split('-')
+        const [fromCity, toCity] = cities.split('->')
         if (!time || !fromCity || !toCity) {
             return await bot.sendMessage(
                 msg.chat.id,
-                'Неправильный формат. Правильный формат /time Время Город - Город'
+                'Неправильный формат. Правильный формат /time Время Город -> Город'
             )
         }
         const fromCityTimezone = this.getTimezoneByCity(
