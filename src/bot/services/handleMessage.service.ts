@@ -10,90 +10,35 @@ export class HandleMessageService {
 
     async handleMessage(msg: TelegramBot.Message) {
         const bot: TelegramBot = global.bot
-        if (msg.text === '/start') {
-            return await bot.sendMessage(msg.chat.id, 'Hello World!')
-        } else if (msg.text.includes('/time')) {
-            const texts = [
-                msg.text.split(' ')[0],
-                msg.text.split(' ').slice(1, 2).join(' '),
-                msg.text.split(' ').slice(2).join(''),
-            ]
-            return await this.getTime(texts[1], texts[2])
+        const texts = msg.text.split(' ')
+        switch (texts[0]) {
+            case '/start':
+                return await bot.sendMessage(msg.chat.id, 'Hello World!')
+            case '/time':
+                return await this.getTime(texts[1])
         }
     }
-    private async getTime(time: string, cities: string) {
+    private async getTime(textMain: string) {
         const bot: TelegramBot = global.bot
         const msg: TelegramBot.Message = global.msg
-        const [fromCity, toCity] = cities.split('->')
-        if (!time || !fromCity || !toCity) {
-            return await bot.sendMessage(
-                msg.chat.id,
-                'Неправильный формат. Правильный формат /time Время Город -> Город'
-            )
-        }
-        const fromCityTimezone = await this.convertToEnglish(fromCity)
-
-        const toCityTimezone = await this.convertToEnglish(toCity)
-        if (fromCityTimezone && toCityTimezone) {
-            const text = this.convertTime(
-                time,
-                fromCityTimezone,
-                toCityTimezone
-            )
-            return await bot.sendMessage(
-                msg.chat.id,
-                `Когда в ${fromCity} ${time}, в ${toCity} ${text}`
-            )
-        }
-        return await bot.sendMessage(
-            msg.chat.id,
-            'Не могу определить город. Проверьте название города'
-        )
+        const text = await this.converTime(textMain)
+        return await bot.sendMessage(msg.chat.id, text)
     }
 
-    private async convertToEnglish(text: string) {
+    private async converTime(text: string) {
         const geminiToken = this.configService.get('GEMINI_API')
         const genAI = new GoogleGenerativeAI(geminiToken)
         const model = genAI.getGenerativeModel({
             model: 'gemini-2.0-flash',
         })
         const text1 = await model.generateContent(
-            'Ты профессиональный переводчик. Ты получил название города или страны на любом языке, например русском. Переведи его на английский и верни тайм зону.\n' +
-                'Например, вводит Москва, ты должен ответить Europe/Moscow.\n' +
-                'Если пользователь ввел страну, верни столицу этой страны. Например, вводит Россия, ты должен ответить Europe/Moscow.\n' +
-                'Возвращай одно слово-саму зону. Не пиши ничего больше.\n' +
-                'Вот первый город: ' +
+            'Ты профессиональный переводчик.Ты получаешь данные вида 12:00 Нью-Йорк -> Чикаго.\n' +
+                'Эта строка значит что ты должен вернуть время в Чикаго, когда в Нью-Йорке 12:00 дня.\n' +
+                'Ты должен вернуть должен одну строку в формате “Когда в Нью-Йорке 12, в Чикаго …”' +
+                'Если пользователь ввел страну, то в качестве ответа ты должен вернуть время в столице этой страны, но пиши все равно страну в ответе' +
+                'Вот первая строка: ' +
                 text
         )
         return text1.response.text()
-    }
-
-    private getTimezoneByCity(cityName) {
-        const results = cityTimezones.lookupViaCity(cityName)
-        if (results && results.length > 0) {
-            return results[0].timezone
-        }
-        return null
-    }
-
-    private convertTime(
-        time: string,
-        fromTimeZone: string,
-        toTimeZone: string
-    ): string {
-        const [hour, min] = time.split(':')
-        const date = new Date()
-        date.setHours(+hour)
-        date.setMinutes(+min)
-        date.setSeconds(0)
-        date.setMilliseconds(0)
-        const timeInZone2 = new Intl.DateTimeFormat('en-US', {
-            timeZone: toTimeZone,
-            hour12: false,
-            hour: 'numeric',
-            minute: 'numeric',
-        }).format(date)
-
-        return timeInZone2
     }
 }
