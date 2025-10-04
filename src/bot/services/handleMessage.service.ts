@@ -109,7 +109,18 @@ export class HandleMessageService {
         } else if (!city1TimeZone || !city2TimeZone) {
             return 'error'
         }
-        console.log('1:' + city1TimeZone + ':' + city2TimeZone)
+        console.log(
+            '1:' +
+                city1TimeZone +
+                ':' +
+                city2TimeZone +
+                ':' +
+                time +
+                ':' +
+                city1 +
+                ':' +
+                city2
+        )
 
         const timezone1 = ct.getTimezone(city1TimeZone)
         console.log(timezone1)
