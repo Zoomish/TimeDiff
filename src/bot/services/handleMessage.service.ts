@@ -42,6 +42,12 @@ export class HandleMessageService {
                 .join(':')
             cities = textMain.split(' ')?.join('')
         }
+        console.log(
+            new Date().toString(),
+            new Date().toTimeString(),
+            new Date().toUTCString(),
+            new Date().toLocaleTimeString()
+        )
 
         const [city1, city2] = cities.split('->')
         if (!city1 || !city2) {
