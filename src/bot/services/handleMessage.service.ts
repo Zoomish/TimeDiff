@@ -52,6 +52,13 @@ export class HandleMessageService {
             textMain.split(' ')?.[0] || null,
             textMain.split(' ')?.slice(1)?.join('') || '',
         ]
+        console.log(
+            textMain.split(' ')?.[0] || null,
+            textMain.split(' ')?.slice(1)?.join('') || '',
+            textMain.split(' '),
+            cities
+        )
+
         const [city1, city2] = cities.split('->')
         console.log(city1, typeof city1, city2, typeof city2)
 
