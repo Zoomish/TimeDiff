@@ -27,22 +27,23 @@ export class HandleMessageService {
         const bot: TelegramBot = global.bot
         const msg: TelegramBot.Message = global.msg
 
-        if (!textMain) {
-            return await this.sendError()
+        if (!textMain) return this.sendError()
+
+        let parts = textMain.split(' ')
+        let time = parts[0]?.trim() || null
+        let [city1, city2] = parts.slice(1).join('').split('->') || ['', '']
+
+        const isTime = !isNaN(Number(time?.split(':')[0]))
+
+        if (!isTime) {
+            time = null
+            const cities = textMain.replace(/\s+/g, '').split('->') || ['', '']
+            city1 = cities[0] || ''
+            city2 = cities[1] || ''
         }
 
-        let time = textMain.split(' ')?.[0]?.trim()
-        let [city1, city2] = ['', '']
-        if (isNaN(Number(time.trim().split(':')[0]))) {
-            time = null
-            ;[city1, city2] = textMain.split(' ')?.join('')?.split('->') || [
-                '',
-                '',
-            ]
-        }
-        if (!city1 || !city2) {
-            return await this.sendError()
-        }
+        if (!city1 || !city2) return this.sendError()
+
         const city1TimeZone = (await this.getTimezone(city1.trim())).trim()
         const city2TimeZone = (await this.getTimezone(city2.trim())).trim()
 
@@ -58,13 +59,15 @@ export class HandleMessageService {
             city1TimeZone,
             city2TimeZone
         )
+
         if (timezone === 'error') {
-            return await bot.sendMessage(
+            return bot.sendMessage(
                 msg.chat.id,
                 'Не удалось определить таймзону, проверьте названия городов'
             )
         }
-        return await bot.sendMessage(
+
+        return bot.sendMessage(
             msg.chat.id,
             `Когда в ${city1.trim()} ${time}, в ${city2.trim()} ${timezone}`
         )
