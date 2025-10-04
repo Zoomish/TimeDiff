@@ -53,18 +53,18 @@ export class HandleMessageService {
             textMain.split(' ')?.slice(1)?.join('') || '',
         ]
         const [city1, city2] = cities.split('->')
-        console.log('time: ' + time)
 
         const timezone = await this.converTime(
-            time ||
-                new Date()
-                    .toUTCString()
-                    .split(' ')[4]
-                    .split(':')
-                    .slice(0, 2)
-                    .join(':'),
-            city1,
-            city2
+            isNaN(Number(time.trim().split(':')[0]))
+                ? new Date()
+                      .toUTCString()
+                      .split(' ')[4]
+                      .split(':')
+                      .slice(0, 2)
+                      .join(':')
+                : time.trim(),
+            city1.trim(),
+            city2.trim()
         )
         if (timezone === 'error') {
             return await bot.sendMessage(
@@ -74,7 +74,7 @@ export class HandleMessageService {
         }
         return await bot.sendMessage(
             msg.chat.id,
-            `Когда в ${city1} ${time}, в ${city2} ${timezone}`
+            `Когда в ${city1.trim()} ${time}, в ${city2.trim()} ${timezone}`
         )
     }
 
@@ -103,7 +103,7 @@ export class HandleMessageService {
     private async converTime(time: string, city1: string, city2: string) {
         const city1TimeZone = (await this.getTimezone(city1)).trim()
         const city2TimeZone = (await this.getTimezone(city2)).trim()
-        console.log('1', time, city1, city2, city1TimeZone, city2TimeZone)
+        console.log('1', city1TimeZone, city2TimeZone)
 
         if (city1TimeZone === city2TimeZone) {
             return time
