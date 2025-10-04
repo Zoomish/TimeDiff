@@ -26,8 +26,6 @@ export class HandleMessageService {
         }
     }
     private async getTime(textMain: string) {
-        console.log(textMain)
-
         const bot: TelegramBot = global.bot
         const msg: TelegramBot.Message = global.msg
 
