@@ -11,10 +11,11 @@ export class HandleMessageService {
     async handleMessage(msg: TelegramBot.Message) {
         const bot: TelegramBot = global.bot
         bot.sendChatAction(msg.chat.id, 'typing')
-        console.log(msg.text?.split(' ')?.[0], msg.text?.split('@')?.[0])
 
         const [action, text] = [
-            msg.text?.split(' ')?.[0] || msg.text?.split('@')?.[0] || '/start',
+            (msg.text.includes('@')
+                ? msg.text?.split('@')?.[0]
+                : msg.text?.split(' ')?.[0]) || '/start',
             msg.text?.split(' ')?.slice(1)?.join(' ') || '',
         ]
         switch (action) {
@@ -25,6 +26,8 @@ export class HandleMessageService {
         }
     }
     private async getTime(textMain: string) {
+        console.log(textMain)
+
         const bot: TelegramBot = global.bot
         const msg: TelegramBot.Message = global.msg
 
