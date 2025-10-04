@@ -53,6 +53,7 @@ export class HandleMessageService {
             textMain.split(' ')?.slice(1)?.join('') || '',
         ]
         const [city1, city2] = cities.split('->')
+        console.log(city1, typeof city1, city2, typeof city2)
 
         const timezone = await this.converTime(
             isNaN(Number(time.trim().split(':')[0]))
@@ -109,7 +110,6 @@ export class HandleMessageService {
         } else if (!city1TimeZone || !city2TimeZone) {
             return 'error'
         }
-        console.log(city1)
 
         const timezone1 = ct.getTimezone(city1TimeZone)
         console.log(timezone1)
