@@ -53,7 +53,17 @@ export class HandleMessageService {
             textMain.split(' ')?.slice(1)?.join('') || '',
         ]
         const [city1, city2] = cities.split('->')
-        const timezone = await this.converTime(time, city1, city2)
+        const timezone = await this.converTime(
+            time ||
+                new Date()
+                    .toUTCString()
+                    .split(' ')[4]
+                    .split(':')
+                    .slice(0, 2)
+                    .join(':'),
+            city1,
+            city2
+        )
         if (timezone === 'error') {
             return await bot.sendMessage(
                 msg.chat.id,
@@ -102,9 +112,7 @@ export class HandleMessageService {
         const timezone1 = ct.getTimezone(city1TimeZone)
         console.log(timezone1)
 
-        const date1 = new Date(
-            `August 19, 1975 ${time || new Date().toUTCString().split(' ')[4].split(':').slice(0, 2).join(':')}:00`
-        )
+        const date1 = new Date(`August 19, 1975 ${time}:00`)
         date1.setMinutes(date1.getMinutes() + date1.getTimezoneOffset() * -1)
         date1.setMinutes(date1.getMinutes() + timezone1.dstOffset * -1)
         return date1.toLocaleTimeString('en-US', {
