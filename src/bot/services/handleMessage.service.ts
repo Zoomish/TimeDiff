@@ -103,13 +103,13 @@ export class HandleMessageService {
     private async converTime(time: string, city1: string, city2: string) {
         const city1TimeZone = (await this.getTimezone(city1)).trim()
         const city2TimeZone = (await this.getTimezone(city2)).trim()
-        console.log('1', city1TimeZone, city2TimeZone)
 
         if (city1TimeZone === city2TimeZone) {
             return time
         } else if (!city1TimeZone || !city2TimeZone) {
             return 'error'
         }
+        console.log('1:' + city1TimeZone + ':' + city2TimeZone)
 
         const timezone1 = ct.getTimezone(city1TimeZone)
         console.log(timezone1)
