@@ -66,7 +66,7 @@ export class HandleMessageService {
         )
     }
 
-    private async getTimezone(text: string) {
+    private async getTimezone(text: string): Promise<string> {
         const geminiToken = this.configService.get('GEMINI_API')
         const genAI = new GoogleGenerativeAI(geminiToken)
         const model = genAI.getGenerativeModel({
@@ -89,9 +89,9 @@ export class HandleMessageService {
     }
 
     private async converTime(time: string, city1: string, city2: string) {
-        const city1TimeZone = await this.getTimezone(city1)
-        const city2TimeZone = await this.getTimezone(city2)
-        console.log(time, city1TimeZone, city2TimeZone, city1, city2)
+        const city1TimeZone = (await this.getTimezone(city1)).trim()
+        const city2TimeZone = (await this.getTimezone(city2)).trim()
+        console.log({ time, city1TimeZone, city2TimeZone, city1, city2 })
 
         if (city1TimeZone === city2TimeZone) {
             return time
