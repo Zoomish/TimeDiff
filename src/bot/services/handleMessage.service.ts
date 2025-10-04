@@ -53,6 +53,8 @@ export class HandleMessageService {
             textMain.split(' ')?.slice(1)?.join('') || '',
         ]
         const [city1, city2] = cities.split('->')
+        console.log('time: ' + time)
+
         const timezone = await this.converTime(
             time ||
                 new Date()
@@ -101,7 +103,7 @@ export class HandleMessageService {
     private async converTime(time: string, city1: string, city2: string) {
         const city1TimeZone = (await this.getTimezone(city1)).trim()
         const city2TimeZone = (await this.getTimezone(city2)).trim()
-        console.log('1', time, city1, city2)
+        console.log('1', time, city1, city2, city1TimeZone, city2TimeZone)
 
         if (city1TimeZone === city2TimeZone) {
             return time
