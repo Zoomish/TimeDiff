@@ -43,10 +43,10 @@ export class HandleMessageService {
             cities = textMain.split(' ')?.join('')
         }
         console.log(
-            new Date().toString(),
-            new Date().toTimeString(),
-            new Date().toUTCString(),
-            new Date().toLocaleTimeString()
+            new Date(msg.date).toString(),
+            new Date(msg.date).toTimeString(),
+            new Date(msg.date).toUTCString(),
+            new Date(msg.date).toLocaleTimeString()
         )
 
         const [city1, city2] = cities.split('->')
