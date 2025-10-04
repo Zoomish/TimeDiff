@@ -48,10 +48,17 @@ export class HandleMessageService {
                 }
             )
         }
-        const [time, cities] = [
-            textMain.split(' ')?.[0] || null,
-            textMain.split(' ')?.slice(1)?.join('') || '',
-        ]
+        let time = textMain.split(' ')?.[0]?.trim()
+        let cities = textMain.split(' ')?.slice(1)?.join('') || ''
+        if (isNaN(Number(time.trim().split(':')[0]))) {
+            time = new Date()
+                .toUTCString()
+                .split(' ')[4]
+                .split(':')
+                .slice(0, 2)
+                .join(':')
+            cities = textMain.split(' ')?.join('')
+        }
         console.log(
             textMain.split(' ')?.[0] || null,
             textMain.split(' ')?.slice(1)?.join('') || '',
@@ -60,20 +67,29 @@ export class HandleMessageService {
         )
 
         const [city1, city2] = cities.split('->')
-        console.log(city1, typeof city1, city2, typeof city2)
+        if (!city1 || !city2) {
+            return await bot.sendMessage(
+                msg.chat.id,
+                'Введите данные в формате <code>/time Время Город -> Город</code>',
+                {
+                    parse_mode: 'HTML',
+                    reply_markup: {
+                        inline_keyboard: [
+                            [
+                                {
+                                    text: 'Скопировать формат',
+                                    copy_text: {
+                                        text: '/time Время Город -> Город',
+                                    },
+                                },
+                            ],
+                        ],
+                    },
+                }
+            )
+        }
 
-        const timezone = await this.converTime(
-            isNaN(Number(time.trim().split(':')[0]))
-                ? new Date()
-                      .toUTCString()
-                      .split(' ')[4]
-                      .split(':')
-                      .slice(0, 2)
-                      .join(':')
-                : time.trim(),
-            city1.trim(),
-            city2.trim()
-        )
+        const timezone = await this.converTime(time, city1.trim(), city2.trim())
         if (timezone === 'error') {
             return await bot.sendMessage(
                 msg.chat.id,
@@ -119,7 +135,6 @@ export class HandleMessageService {
         }
 
         const timezone1 = ct.getTimezone(city1TimeZone)
-        console.log(timezone1)
 
         const date1 = new Date(`August 19, 1975 ${time}:00`)
         date1.setMinutes(date1.getMinutes() + date1.getTimezoneOffset() * -1)
