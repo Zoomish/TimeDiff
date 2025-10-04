@@ -11,7 +11,6 @@ export class HandleMessageService {
     async handleMessage(msg: TelegramBot.Message) {
         const bot: TelegramBot = global.bot
         bot.sendChatAction(msg.chat.id, 'typing')
-        console.log(msg.text)
 
         const [action, text] = [
             msg.text?.split(' ')?.[0] || msg.text?.split('@')?.[0] || '/start',
@@ -92,6 +91,7 @@ export class HandleMessageService {
     private async converTime(time: string, city1: string, city2: string) {
         const city1TimeZone = await this.getTimezone(city1)
         const city2TimeZone = await this.getTimezone(city2)
+        console.log(time, city1TimeZone, city2TimeZone, city1, city2)
 
         if (city1TimeZone === city2TimeZone) {
             return time
@@ -100,6 +100,8 @@ export class HandleMessageService {
         }
 
         const timezone1 = ct.getTimezone(city1TimeZone)
+        console.log(timezone1)
+
         const date1 = new Date(
             `August 19, 1975 ${time || new Date().toUTCString().split(' ')[4].split(':').slice(0, 2).join(':')}:00`
         )
