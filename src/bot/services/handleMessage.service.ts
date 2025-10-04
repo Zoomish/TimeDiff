@@ -32,29 +32,32 @@ export class HandleMessageService {
         }
 
         let time = textMain.split(' ')?.[0]?.trim()
-        let cities = textMain.split(' ')?.slice(1)?.join('') || ''
+        let [city1, city2] = ['', '']
         if (isNaN(Number(time.trim().split(':')[0]))) {
-            time = new Date()
-                .toString()
-                .split(' ')[4]
-                .split(':')
-                .slice(0, 2)
-                .join(':')
-            cities = textMain.split(' ')?.join('')
+            time = null
+            ;[city1, city2] = textMain.split(' ')?.join('')?.split('->') || [
+                '',
+                '',
+            ]
         }
-        console.log(
-            new Date().toString(),
-            new Date().toTimeString(),
-            new Date().toUTCString(),
-            new Date().toLocaleTimeString()
-        )
-
-        const [city1, city2] = cities.split('->')
         if (!city1 || !city2) {
             return await this.sendError()
         }
+        const city1TimeZone = (await this.getTimezone(city1.trim())).trim()
+        const city2TimeZone = (await this.getTimezone(city2.trim())).trim()
 
-        const timezone = await this.converTime(time, city1.trim(), city2.trim())
+        time ??= new Date().toLocaleTimeString('en-US', {
+            timeZone: city1TimeZone,
+            hour12: false,
+            hour: 'numeric',
+            minute: 'numeric',
+        })
+
+        const timezone = await this.converTime(
+            time,
+            city1TimeZone,
+            city2TimeZone
+        )
         if (timezone === 'error') {
             return await bot.sendMessage(
                 msg.chat.id,
@@ -89,10 +92,11 @@ export class HandleMessageService {
         return text1
     }
 
-    private async converTime(time: string, city1: string, city2: string) {
-        const city1TimeZone = (await this.getTimezone(city1)).trim()
-        const city2TimeZone = (await this.getTimezone(city2)).trim()
-
+    private async converTime(
+        time: string,
+        city1TimeZone: string,
+        city2TimeZone: string
+    ) {
         if (city1TimeZone === city2TimeZone) {
             return time
         } else if (!city1TimeZone || !city2TimeZone) {
