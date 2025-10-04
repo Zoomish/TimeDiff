@@ -28,65 +28,24 @@ export class HandleMessageService {
         const msg: TelegramBot.Message = global.msg
 
         if (!textMain) {
-            return await bot.sendMessage(
-                msg.chat.id,
-                'Введите данные в формате <code>/time Время Город -> Город</code>',
-                {
-                    parse_mode: 'HTML',
-                    reply_markup: {
-                        inline_keyboard: [
-                            [
-                                {
-                                    text: 'Скопировать формат',
-                                    copy_text: {
-                                        text: '/time Время Город -> Город',
-                                    },
-                                },
-                            ],
-                        ],
-                    },
-                }
-            )
+            return await this.sendError()
         }
+
         let time = textMain.split(' ')?.[0]?.trim()
         let cities = textMain.split(' ')?.slice(1)?.join('') || ''
         if (isNaN(Number(time.trim().split(':')[0]))) {
             time = new Date()
-                .toUTCString()
+                .toString()
                 .split(' ')[4]
                 .split(':')
                 .slice(0, 2)
                 .join(':')
             cities = textMain.split(' ')?.join('')
         }
-        console.log(
-            textMain.split(' ')?.[0] || null,
-            textMain.split(' ')?.slice(1)?.join('') || '',
-            textMain.split(' '),
-            cities
-        )
 
         const [city1, city2] = cities.split('->')
         if (!city1 || !city2) {
-            return await bot.sendMessage(
-                msg.chat.id,
-                'Введите данные в формате <code>/time Время Город -> Город</code>',
-                {
-                    parse_mode: 'HTML',
-                    reply_markup: {
-                        inline_keyboard: [
-                            [
-                                {
-                                    text: 'Скопировать формат',
-                                    copy_text: {
-                                        text: '/time Время Город -> Город',
-                                    },
-                                },
-                            ],
-                        ],
-                    },
-                }
-            )
+            return await this.sendError()
         }
 
         const timezone = await this.converTime(time, city1.trim(), city2.trim())
@@ -145,5 +104,28 @@ export class HandleMessageService {
             hour: '2-digit',
             minute: '2-digit',
         })
+    }
+    async sendError() {
+        const msg: TelegramBot.Message = global.msg
+        const bot: TelegramBot = global.bot
+        return await bot.sendMessage(
+            msg.chat.id,
+            'Введите данные в формате <code>/time Время Город -> Город</code>',
+            {
+                parse_mode: 'HTML',
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {
+                                text: 'Скопировать формат',
+                                copy_text: {
+                                    text: '/time Время Город -> Город',
+                                },
+                            },
+                        ],
+                    ],
+                },
+            }
+        )
     }
 }
