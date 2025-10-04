@@ -91,7 +91,7 @@ export class HandleMessageService {
     private async converTime(time: string, city1: string, city2: string) {
         const city1TimeZone = (await this.getTimezone(city1)).trim()
         const city2TimeZone = (await this.getTimezone(city2)).trim()
-        console.log({ time, city1TimeZone, city2TimeZone, city1, city2 })
+        console.log('1', time, city1, city2)
 
         if (city1TimeZone === city2TimeZone) {
             return time
