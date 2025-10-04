@@ -90,7 +90,7 @@ export class HandleMessageService {
                 'Ты профессиональный переводчик. Ты получил название города или страны на любом языке, например русском. Переведи его на английский и верни тайм зону.\n' +
                     'Например, вводит Москва, ты должен ответить Europe/Moscow.\n' +
                     'Если пользователь ввел страну, верни столицу этой страны. Например, вводит Россия, ты должен ответить Europe/Moscow.\n' +
-                    'Возвращай одно слово-саму зону. Не пиши ничего больше!! \n' +
+                    'Возвращай одну строку-саму зону. Не пиши ничего больше!! \n' +
                     'Вот первый город: ' +
                     text
             )
@@ -109,18 +109,7 @@ export class HandleMessageService {
         } else if (!city1TimeZone || !city2TimeZone) {
             return 'error'
         }
-        console.log(
-            '1:' +
-                city1TimeZone +
-                ':' +
-                city2TimeZone +
-                ':' +
-                time +
-                ':' +
-                city1 +
-                ':' +
-                city2
-        )
+        console.log(city1)
 
         const timezone1 = ct.getTimezone(city1TimeZone)
         console.log(timezone1)
